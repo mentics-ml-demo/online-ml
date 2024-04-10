@@ -2,4 +2,4 @@
 set -e
 cd out/terraform
 
-tofu destroy
+tofu destroy -auto-approve -parallelism=100

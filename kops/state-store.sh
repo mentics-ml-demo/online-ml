@@ -8,21 +8,24 @@ set -e
 # pushd ${parent_path} > /dev/null
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
-# echo "State store: ${STATE_STORE}"
-# echo "OIDC store: ${OIDC_STORE}"
-aws s3api create-bucket \
+
+echo "Creating state store in S3: ${STATE_STORE_URL}"
+
+aws s3api create-bucket --no-cli-pager \
     --bucket ${STATE_STORE} \
     --region us-east-1
+aws s3api put-bucket-versioning --no-cli-pager --bucket ${STATE_STORE} --versioning-configuration Status=Enabled
 
-aws s3api put-bucket-versioning --bucket ${STATE_STORE} --versioning-configuration Status=Enabled
 
-aws s3api create-bucket \
+echo "Creating OIDC store in S3: ${OIDC_STORE_URL}"
+
+aws s3api create-bucket --no-cli-pager \
     --bucket ${OIDC_STORE} \
     --region us-east-1 \
     --object-ownership BucketOwnerPreferred
-aws s3api put-public-access-block \
+aws s3api put-public-access-block --no-cli-pager \
     --bucket ${OIDC_STORE} \
     --public-access-block-configuration BlockPublicAcls=false,IgnorePublicAcls=false,BlockPublicPolicy=false,RestrictPublicBuckets=false
-aws s3api put-bucket-acl \
+aws s3api put-bucket-acl --no-cli-pager \
     --bucket ${OIDC_STORE} \
     --acl public-read

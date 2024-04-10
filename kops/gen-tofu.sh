@@ -8,6 +8,7 @@ set -e
 # pushd ${parent_path} > /dev/null
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
+echo "Generating terraform cluster configuration from kops"
 kops create cluster \
     --name ${CLUSTER_NAME} \
     --discovery-store ${OIDC_STORE_URL} \
@@ -20,6 +21,7 @@ kops create cluster \
     --node-size ${NODE_SIZE} \
     --node-count ${NODE_COUNT} \
     --target=terraform
+    --out yaml > ../out/kops-${CLUSTER_NAME}.yaml
 
 # If you want to use spot instances, comment the line with target=terraform above, and uncomment the following:
 # kops edit ig control-plane-us-west-2b \
@@ -30,7 +32,7 @@ kops create cluster \
 #     --set "spec.mixedInstancesPolicy.onDemandAboveBase=0" \
 #     --set "spec.mixedInstancesPolicy.spotAllocationStrategy=lowest-price"
 
-# kops edit ig control-plane-us-west-2b \
+# kops edit ig node-us-west-2b \
 #     --name ${CLUSTER_NAME} \
 #     --state ${STATE_STORE_URL} \
 #     --set "spec.mixedInstancesPolicy.instances=t4g.small" \
@@ -50,3 +52,5 @@ kops create cluster \
     # --set spec.mixedInstancesPolicy.spotAllocationStrategy=lowest-price \
     # --set "spec.etcdClusters[0].etcdMembers[0].instanceGroup.spec.maxSize=3" \
     # --set "instanceGroups[0].mixedInstancesPolicy.enabled=true" \
+
+mv out ..

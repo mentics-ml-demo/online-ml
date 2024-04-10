@@ -1,5 +1,4 @@
 #!/bin/bash
-set -e
 
-./tofu/99-shutdown-cluster.sh
-./kops/99-cleanup.sh
+./tofu/shutdown-cluster.sh
+./kops/cleanup.sh

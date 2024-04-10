@@ -4,8 +4,9 @@
 set -e
 
 source setenv.sh
-./kops/1-state-store.sh
-./kops/2-gen-tofu.sh
-./tofu/3-run-cluster.sh
+./kops/state-store.sh
+./kops/gen-tofu.sh
+./tofu/run-cluster.sh
+./kops/kubectl-context.sh
 
-./argo/1-install-argocd.sh
+./argo/install-argocd.sh

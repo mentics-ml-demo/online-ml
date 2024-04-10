@@ -1,5 +1,6 @@
 # online-ml
-Example system that runs an online ml model (including training and inference) based on streaming data.
+
+Demonstration system that runs an ML model (including inference, ongoing training, and model updating) based on streaming data with a single script deploy to AWS using kops, kubernetes, terraform/opentofu, argocd, and kubeflow.
 
 # Run
 
