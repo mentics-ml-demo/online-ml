@@ -10,4 +10,4 @@
 
 RUSTFLAGS='-C link-arg=-s' cargo build --release --target x86_64-unknown-linux-musl
 
-docker build -t minfer:latest .
+docker build -t mentics/minfer:latest .

@@ -1,3 +1,17 @@
+
+When trying to use in Cargo.toml:
+reqwest = { version = "0.12.2", features = ["native-tls-vendored"] }
+
+it couldn't compile openssl for musl target with error:
+`warning: openssl-sys@0.9.102: Compiler family detection failed due to error: ToolNotFound: Failed to find tool. Is `musl-gcc` installed?`
+
+so I added featuers to use rustls.
+
+Still had problem for building target musl. Had to run:
+sudo apt install musl-tools
+
+
+
 https://stackoverflow.com/questions/59766239/how-to-build-a-rust-app-free-of-shared-libraries
 
 rustup target add x86_64-unknown-linux-musl
