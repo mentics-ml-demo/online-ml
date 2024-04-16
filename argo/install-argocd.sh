@@ -3,13 +3,17 @@
 set -e
 
 kubectl create namespace argocd
+kubectl config set-context --current --namespace=argocd
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 
-# kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
-kubectl port-forward svc/argocd-server -n argocd 8001:443 &
+# TODO: need to wait until confirm it's running before continuing beyond here
 
+# kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
+kubectl port-forward svc/argocd-server -n argocd 8001:443 > /dev/null 2>&1 &
+
+export ARGOCD_SERVER_URL=https://localhost:8001
 export ARGOCD_SERVER=localhost:8001
-echo "export ARGOCD_SERVER=https://localhost:8001"
+echo "export ARGOCD_SERVER=${ARGOCD_SERVER}"
 
 export TEMP_PASSWORD=`argocd admin initial-password -n argocd | head -n 1`
 
@@ -22,11 +26,11 @@ password() {
 }
 
 export ARGO_PASSWORD=$(password)
-echo "export ARGO_PASSWORD=$(password)"
+echo "${ARGO_PASSWORD}" > ~/.argocd-password
+echo "wrote argocd password to ~/.argocd-password"
 
 argocd account update-password --current-password ${TEMP_PASSWORD} --new-password ${ARGO_PASSWORD}
 
-kubectl config set-context --current --namespace=argocd
 
 # # TODO: this is just a sample app for testing. remove when testing completed.
 # argocd app create guestbook --repo https://github.com/argoproj/argocd-example-apps.git --path guestbook --dest-server https://kubernetes.default.svc --dest-namespace default

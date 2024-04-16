@@ -3,7 +3,13 @@ AWS_PROFILE=kops
 AWS_ACCESS_KEY_ID=$(aws configure get aws_access_key_id)
 AWS_SECRET_ACCESS_KEY=$(aws configure get aws_secret_access_key)
 
-NAME=mentics-spot-k8s
+# AWS_ACCESS_KEY=$AWS_ACCESS_KEY_ID
+# AWS_SECRET_KEY=$AWS_SECRET_ACCESS_KEY
+
+TF_VAR_AWS_ACCESS_KEY=$AWS_ACCESS_KEY_ID
+TF_VAR_AWS_SECRET_KEY=$AWS_SECRET_ACCESS_KEY
+
+NAME=mentics-demo
 
 CLUSTER_NAME=${NAME}.k8s.local
 STATE_STORE=${NAME}-state-store
@@ -15,11 +21,13 @@ STATE_STORE_URL=s3://${STATE_STORE}
 # kops looks at KOPS_STATE_STORE directly so you don't have to specify it on command line
 KOPS_STATE_STORE=${STATE_STORE_URL}
 
+# change to ZONE
 ZONES=us-west-2b
+
+VPC_ID=vpc-0d622d74
+NETWORK_CIDR=172.31.0.0/16
 
 CONTROL_PLANE_SIZE=t4g.small
 CONTROL_PLANE_COUNT=1
 NODE_SIZE=t4g.small
-NODE_COUNT=1
-
-TESTVAR="asdfasdfasdf"
+NODE_COUNT=3

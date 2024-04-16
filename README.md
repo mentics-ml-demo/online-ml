@@ -18,3 +18,7 @@ For running commands or troubleshooting, you can set the vars in your current sh
 # Notes:
 
 I specified t4g.small for size because they are free during 2024. Also, oddly enough, the on-demand t4g.small's are free, but it seems I was charged a few cents when running them as spot instances. So, these scripts are currently not running spot instances until that changes.
+
+TODO: After building everything, can go in manually and
+delete the load balancer
+delete the elastic ip

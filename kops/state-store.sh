@@ -4,8 +4,6 @@
 set -e
 
 # Make paths based on location of this script
-# parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
-# pushd ${parent_path} > /dev/null
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
 

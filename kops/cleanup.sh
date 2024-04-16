@@ -24,3 +24,7 @@ delete_bucket() {
 
 delete_bucket ${STATE_STORE}
 delete_bucket ${OIDC_STORE}
+
+
+# cd "$(dirname "${BASH_SOURCE[0]}")"
+# rm -rf ../out

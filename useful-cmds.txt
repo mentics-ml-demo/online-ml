@@ -1,0 +1,66 @@
+# kubectl
+
+kubectl config set-context --current --namespace=rpanda
+kubectl config set-context --current --namespace=default
+
+kubectl get ServiceAccounts --all-namespaces
+
+kubectl describe svc fluvio-sc-public -n fluvio
+
+kubectl -n fluvio port-forward svc/fluvio-sc-public 8003:9003
+ > /dev/null 2>&1 &
+
+
+kubectl logs -l app=fluvio-sc -n fluvio
+
+
+# fluvio
+
+fluvio topic create greetings
+echo "Hello, Fluvio" | fluvio produce greetings
+
+
+
+# create a test pod I can use to run things from inside
+kubectl apply -f https://k8s.io/examples/application/shell-demo.yaml
+kubectl get pod shell-demo
+kubectl exec --stdin --tty shell-demo -- /bin/bash
+
+
+kubectl exec --stdin --tty  -- /bin/bash
+
+
+
+# go to aws dashboard to connect to control plane node and then can run kubectl from there
+
+
+fluvio profile add k1 localhost:30003
+
+
+api server is at https://kubernetes.default.svc inside cluster, I think
+
+
+
+
+
+fluvio cluster start --k8 --proxy-addr api-mentics-spot-k8s-k8s--e6qib6-6b79f365d34fdffb.elb.us-west-2.amazonaws.com
+
+
+
+
+# troubleshooting docs for redpanda
+# https://docs.redpanda.com/current/manage/kubernetes/troubleshooting/k-troubleshoot/
+
+# Watch helm release logs:
+kubectl logs -l app.kubernetes.io/name=operator -c manager --namespace rpanda -f
+
+# operator logs
+kubectl logs -l app.kubernetes.io/name=operator -c manager --namespace rpanda -f
+
+# get connection info:
+kubectl exec redpanda-0 --namespace rpanda -- cat /etc/redpanda/redpanda.yaml
+
+
+# test with rpk on redpanda broker
+kubectl -n rpanda exec --stdin --tty redpanda-0 -- /bin/bash
+
