@@ -1,0 +1,17 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: structurizr-ingress
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: structurizr.aws.mentics.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: structurizr
+            port:
+              number: 8080

@@ -12,5 +12,5 @@ echo "Waiting for rollout..."
 kubectl wait -n kubernetes-dashboard --for=condition=ready pod --selector=app.kubernetes.io/name=kubernetes-dashboard-web
 
 echo "Forwarding port"
-kubectl -n kubernetes-dashboard port-forward svc/kubernetes-dashboard-kong-proxy 8443:443 > /dev/null 2>&1 &
+nohup kubectl -n kubernetes-dashboard port-forward svc/kubernetes-dashboard-kong-proxy 8443:443 > /dev/null 2>&1 &
 

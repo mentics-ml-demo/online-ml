@@ -48,7 +48,7 @@ kops edit cluster --name ${CLUSTER_NAME} --set "spec.etcdClusters[1].etcdMembers
 
 # When I remove loadbalancer, kubectl couldn't access api. So, we'll leave it for now.
 # but then when I left it alone, it still prompted me for user/psw so... there's a way to do it.
-# kops edit cluster --name ${CLUSTER_NAME} --unset "spec.api.loadBalancer"
+kops edit cluster --name ${CLUSTER_NAME} --unset "spec.api.loadBalancer"
 
 
 # If you want to use spot instances, comment the line with target=terraform above, and uncomment the following:
