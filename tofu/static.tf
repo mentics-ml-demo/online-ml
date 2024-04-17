@@ -34,11 +34,6 @@ resource "aws_default_subnet" "default" {
   }
 }
 
-resource "aws_ec2_instance_connect_endpoint" "ec2_access" {
-  lifecycle { prevent_destroy = true }
-  subnet_id = aws_default_subnet.default.id
-}
-
 resource "aws_security_group" "allow_ssh" {
   lifecycle { prevent_destroy = true }
 
@@ -63,4 +58,10 @@ resource "aws_security_group" "allow_ssh" {
     self             = "false"
     to_port          = "22"
   }
+}
+
+resource "aws_ec2_instance_connect_endpoint" "ec2_access" {
+  lifecycle { prevent_destroy = true }
+  subnet_id = aws_default_subnet.default.id
+  security_group_ids = [aws_security_group.allow_ssh.id]
 }

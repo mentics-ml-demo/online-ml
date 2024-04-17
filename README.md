@@ -22,3 +22,6 @@ I specified t4g.small for size because they are free during 2024. Also, oddly en
 TODO: After building everything, can go in manually and
 delete the load balancer
 delete the elastic ip
+
+
+TODO: tell autoscaling groups not to encrypt volumes

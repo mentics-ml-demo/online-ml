@@ -32,11 +32,13 @@ get_data() {
     cat ${TEMP_KUBE_FILE} | grep ${KEY} | tr -s ' ' | cut -d ' ' -f 3
 }
 
-KUBE_CERT_AUTH=$(get_data 'certificate-authority-data')
-KUBE_CLIENT_CERT=$(get_data 'client-certificate-data')
-KUBE_CLIENT_KEY=$(get_data 'client-key-data')
+export KUBE_CERT_AUTH=$(get_data 'certificate-authority-data')
+export KUBE_CLIENT_CERT=$(get_data 'client-certificate-data')
+export KUBE_CLIENT_KEY=$(get_data 'client-key-data')
+
+# echo "KUBE_CERT_AUTH: ${KUBE_CERT_AUTH}"
 
 envsubst < kubeconfig.template > ~/.kube/config
 
-echo "Connecting and forwarding 7443 to control-plane:443"
-aws ec2-instance-connect ssh --instance-id ${CONTROL_PLANE_ID} --local-forwarding 7443:localhost:443
+# echo "Connecting and forwarding 7443 to control-plane:443"
+# aws ec2-instance-connect ssh --instance-id ${CONTROL_PLANE_ID} --local-forwarding 7443:localhost:443

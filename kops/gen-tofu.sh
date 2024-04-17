@@ -38,9 +38,13 @@ kops create cluster \
 
 echo "Making some modifications to default config"
 kops edit ig control-plane-us-west-2b --name ${CLUSTER_NAME} --set "spec.rootVolume.size=8"
+kops edit ig control-plane-us-west-2b --name ${CLUSTER_NAME} --set "spec.rootVolume.encryption=false"
 kops edit ig nodes-us-west-2b --name ${CLUSTER_NAME} --set "spec.rootVolume.size=8"
+kops edit ig nodes-us-west-2b --name ${CLUSTER_NAME} --set "spec.rootVolume.encryption=false"
 kops edit cluster --name ${CLUSTER_NAME} --set "spec.etcdClusters[0].etcdMembers[0].volumeSize=8"
+kops edit cluster --name ${CLUSTER_NAME} --set "spec.etcdClusters[0].etcdMembers[0].encryptedVolume=false"
 kops edit cluster --name ${CLUSTER_NAME} --set "spec.etcdClusters[1].etcdMembers[0].volumeSize=8"
+kops edit cluster --name ${CLUSTER_NAME} --set "spec.etcdClusters[1].etcdMembers[0].encryptedVolume=false"
 
 # When I remove loadbalancer, kubectl couldn't access api. So, we'll leave it for now.
 # but then when I left it alone, it still prompted me for user/psw so... there's a way to do it.
