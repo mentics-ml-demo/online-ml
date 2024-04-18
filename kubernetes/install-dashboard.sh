@@ -4,7 +4,7 @@ set -e
 # Add kubernetes-dashboard repository
 helm repo add kubernetes-dashboard https://kubernetes.github.io/dashboard/
 # Deploy a Helm Release named "kubernetes-dashboard" using the kubernetes-dashboard chart
-helm upgrade --install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard --create-namespace --namespace kubernetes-dashboard
+helm upgrade --install kubernetes-dashboard kubernetes-dashboard/kubernetes-dashboard --create-namespace --namespace kubernetes-dashboard --set "kong.proxy.type=NodePort"
 
 # kubectl rollout status deployment kubernetes-dashboard-web -n kubernetes-dashboard
 
@@ -14,3 +14,4 @@ kubectl wait -n kubernetes-dashboard --for=condition=ready pod --selector=app.ku
 echo "Forwarding port"
 nohup kubectl -n kubernetes-dashboard port-forward svc/kubernetes-dashboard-kong-proxy 8443:443 > /dev/null 2>&1 &
 
+kubectl -n kubernetes-dashboard patch svc/kubernetes-dashboard-kong-proxy --patch '{ "spec": { "ports": [{ "port":443, "nodePort": 32000 }] } }' -o yaml --type strategic
