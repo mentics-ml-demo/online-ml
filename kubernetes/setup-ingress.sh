@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+DO NOT CREATE INGRESS. Using haproxy instead
+
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
 kubectl create ns ingress

@@ -1,4 +1,4 @@
 #!/bin/bash
 
-./tofu/shutdown-cluster.sh
+./terraform/shutdown-cluster.sh
 ./kops/cleanup.sh

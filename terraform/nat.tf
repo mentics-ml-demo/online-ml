@@ -1,4 +1,4 @@
-module "fck-nat" {
+module "nat" {
   source = "RaJiska/fck-nat/aws"
 
   name                 = "mentics-demo.nat"

@@ -1,4 +1,4 @@
-# TODO: create user and group
+# TODO: create user and group and keypair
 
 resource "aws_iam_policy" "ec2_instance_connect_policy" {
   lifecycle { prevent_destroy = true }
@@ -35,8 +35,6 @@ resource "aws_default_subnet" "default" {
 }
 
 resource "aws_security_group" "allow_ssh" {
-  lifecycle { prevent_destroy = true }
-
   name   = "AllowSSH"
   description = "AllowSSH"
   vpc_id = aws_default_vpc.default.id

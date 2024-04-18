@@ -1,0 +1,58 @@
+154d153
+<   load_balancers        = [aws_elb.api-mentics-demo-k8s-local.id]
+374,410d372
+< resource "aws_eip" "us-west-2b-mentics-demo-k8s-local" {
+<   tags = {
+<     "KubernetesCluster"                            = "mentics-demo.k8s.local"
+<     "Name"                                         = "us-west-2b.mentics-demo.k8s.local"
+<     "kubernetes.io/cluster/mentics-demo.k8s.local" = "owned"
+<   }
+<   vpc = true
+< }
+< 
+< resource "aws_elb" "api-mentics-demo-k8s-local" {
+<   connection_draining         = true
+<   connection_draining_timeout = 300
+<   cross_zone_load_balancing   = false
+<   health_check {
+<     healthy_threshold   = 2
+<     interval            = 10
+<     target              = "SSL:443"
+<     timeout             = 5
+<     unhealthy_threshold = 2
+<   }
+<   idle_timeout = 300
+<   listener {
+<     instance_port     = 443
+<     instance_protocol = "TCP"
+<     lb_port           = 443
+<     lb_protocol       = "TCP"
+<   }
+<   name            = "api-mentics-demo-k8s-loca-2censn"
+<   security_groups = [aws_security_group.api-elb-mentics-demo-k8s-local.id]
+<   subnets         = [aws_subnet.utility-us-west-2b-mentics-demo-k8s-local.id]
+<   tags = {
+<     "KubernetesCluster"                            = "mentics-demo.k8s.local"
+<     "Name"                                         = "api.mentics-demo.k8s.local"
+<     "kubernetes.io/cluster/mentics-demo.k8s.local" = "owned"
+<   }
+< }
+< 
+702,711d663
+< resource "aws_nat_gateway" "us-west-2b-mentics-demo-k8s-local" {
+<   allocation_id = aws_eip.us-west-2b-mentics-demo-k8s-local.id
+<   subnet_id     = aws_subnet.utility-us-west-2b-mentics-demo-k8s-local.id
+<   tags = {
+<     "KubernetesCluster"                            = "mentics-demo.k8s.local"
+<     "Name"                                         = "us-west-2b.mentics-demo.k8s.local"
+<     "kubernetes.io/cluster/mentics-demo.k8s.local" = "owned"
+<   }
+< }
+< 
+722,727d673
+< }
+< 
+< resource "aws_route" "route-private-us-west-2b-0-0-0-0--0" {
+<   destination_cidr_block = "0.0.0.0/0"
+<   nat_gateway_id         = aws_nat_gateway.us-west-2b-mentics-demo-k8s-local.id
+<   route_table_id         = aws_route_table.private-us-west-2b-mentics-demo-k8s-local.id
