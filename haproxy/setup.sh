@@ -21,8 +21,11 @@ site_remote="/home/ec2-user/"
 ./connect.sh <<EOT
 sudo dnf update
 sudo dnf install haproxy nginx -y
-sudo cp ${haproxy_remote} /etc/haproxy/haproxy.cfg
+
 sudo cp ${nginx_remote} /etc/nginx/nginx.conf
 sudo mkdir -p /srv/www/default && sudo cp -r ${site_remote}/site/* /srv/www/default
+sudo systemctl restart nginx
+
+sudo cp ${haproxy_remote} /etc/haproxy/haproxy.cfg
 sudo systemctl restart haproxy
 EOT

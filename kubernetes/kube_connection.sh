@@ -40,4 +40,4 @@ export KUBE_CLIENT_KEY=$(get_data 'client-key-data')
 envsubst < kubeconfig.template > ~/.kube/config
 
 echo "Connecting and forwarding 7443 to control-plane:443"
-aws ec2-instance-connect ssh --instance-id ${CONTROL_PLANE_ID} --local-forwarding 7443:localhost:443
+aws ec2-instance-connect ssh --instance-id ${CONTROL_PLANE_ID} --local-forwarding 7443:localhost:443 > /dev/null 2>&1

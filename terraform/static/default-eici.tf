@@ -60,8 +60,8 @@ resource "aws_security_group" "allow_ssh" {
 
 resource "aws_ec2_instance_connect_endpoint" "ec2_access" {
   lifecycle { prevent_destroy = true }
-  name = "Default eice"
   subnet_id = aws_default_subnet.default.id
+  preserve_client_ip = false
   security_group_ids = [aws_security_group.allow_ssh.id]
   tags = {
     Name = "Default eice"
