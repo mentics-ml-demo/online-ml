@@ -68,6 +68,7 @@ echo "Exporting kops cluster config to terraform"
 kops update cluster \
     --name ${CLUSTER_NAME} \
     --state ${STATE_STORE_URL} \
+    --admin \
     --target=terraform
 
 echo "Exporting kops cluster config out/kops-${CLUSTER_NAME}.yaml"

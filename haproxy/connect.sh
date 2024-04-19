@@ -15,7 +15,7 @@ fi
 
 if [ -n "$1" ]; then
     if [ "$1" == 'scp' ]; then
-        scp $2 ec2-user@${PUBLIC_DNS}:$3
+        scp -r -i ~/.ssh/awsec2.pem "$2" "ec2-user@${PUBLIC_DNS}:$3"
     else
         ssh -t -i ~/.ssh/awsec2.pem ec2-user@${PUBLIC_DNS} "$1"
     fi

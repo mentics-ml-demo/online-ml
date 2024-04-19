@@ -49,10 +49,181 @@
 <   }
 < }
 < 
-722,727d673
-< }
-< 
+724,729d675
 < resource "aws_route" "route-private-us-west-2b-0-0-0-0--0" {
 <   destination_cidr_block = "0.0.0.0/0"
 <   nat_gateway_id         = aws_nat_gateway.us-west-2b-mentics-demo-k8s-local.id
 <   route_table_id         = aws_route_table.private-us-west-2b-mentics-demo-k8s-local.id
+< }
+< 
+916,937d861
+< resource "aws_security_group" "api-elb-mentics-demo-k8s-local" {
+<   description = "Security group for api ELB"
+<   name        = "api-elb.mentics-demo.k8s.local"
+<   tags = {
+<     "KubernetesCluster"                            = "mentics-demo.k8s.local"
+<     "Name"                                         = "api-elb.mentics-demo.k8s.local"
+<     "kubernetes.io/cluster/mentics-demo.k8s.local" = "owned"
+<   }
+<   vpc_id = aws_vpc.mentics-demo-k8s-local.id
+< }
+< 
+< resource "aws_security_group" "masters-mentics-demo-k8s-local" {
+<   description = "Security group for masters"
+<   name        = "masters.mentics-demo.k8s.local"
+<   tags = {
+<     "KubernetesCluster"                            = "mentics-demo.k8s.local"
+<     "Name"                                         = "masters.mentics-demo.k8s.local"
+<     "kubernetes.io/cluster/mentics-demo.k8s.local" = "owned"
+<   }
+<   vpc_id = aws_vpc.mentics-demo-k8s-local.id
+< }
+< 
+949,957d872
+< resource "aws_security_group_rule" "from-0-0-0-0--0-ingress-tcp-22to22-masters-mentics-demo-k8s-local" {
+<   cidr_blocks       = ["0.0.0.0/0"]
+<   from_port         = 22
+<   protocol          = "tcp"
+<   security_group_id = aws_security_group.masters-mentics-demo-k8s-local.id
+<   to_port           = 22
+<   type              = "ingress"
+< }
+< 
+967,984d881
+< resource "aws_security_group_rule" "from-0-0-0-0--0-ingress-tcp-443to443-api-elb-mentics-demo-k8s-local" {
+<   cidr_blocks       = ["0.0.0.0/0"]
+<   from_port         = 443
+<   protocol          = "tcp"
+<   security_group_id = aws_security_group.api-elb-mentics-demo-k8s-local.id
+<   to_port           = 443
+<   type              = "ingress"
+< }
+< 
+< resource "aws_security_group_rule" "from-__--0-ingress-tcp-22to22-masters-mentics-demo-k8s-local" {
+<   from_port         = 22
+<   ipv6_cidr_blocks  = ["::/0"]
+<   protocol          = "tcp"
+<   security_group_id = aws_security_group.masters-mentics-demo-k8s-local.id
+<   to_port           = 22
+<   type              = "ingress"
+< }
+< 
+994,1047d890
+< resource "aws_security_group_rule" "from-__--0-ingress-tcp-443to443-api-elb-mentics-demo-k8s-local" {
+<   from_port         = 443
+<   ipv6_cidr_blocks  = ["::/0"]
+<   protocol          = "tcp"
+<   security_group_id = aws_security_group.api-elb-mentics-demo-k8s-local.id
+<   to_port           = 443
+<   type              = "ingress"
+< }
+< 
+< resource "aws_security_group_rule" "from-api-elb-mentics-demo-k8s-local-egress-all-0to0-0-0-0-0--0" {
+<   cidr_blocks       = ["0.0.0.0/0"]
+<   from_port         = 0
+<   protocol          = "-1"
+<   security_group_id = aws_security_group.api-elb-mentics-demo-k8s-local.id
+<   to_port           = 0
+<   type              = "egress"
+< }
+< 
+< resource "aws_security_group_rule" "from-api-elb-mentics-demo-k8s-local-egress-all-0to0-__--0" {
+<   from_port         = 0
+<   ipv6_cidr_blocks  = ["::/0"]
+<   protocol          = "-1"
+<   security_group_id = aws_security_group.api-elb-mentics-demo-k8s-local.id
+<   to_port           = 0
+<   type              = "egress"
+< }
+< 
+< resource "aws_security_group_rule" "from-masters-mentics-demo-k8s-local-egress-all-0to0-0-0-0-0--0" {
+<   cidr_blocks       = ["0.0.0.0/0"]
+<   from_port         = 0
+<   protocol          = "-1"
+<   security_group_id = aws_security_group.masters-mentics-demo-k8s-local.id
+<   to_port           = 0
+<   type              = "egress"
+< }
+< 
+< resource "aws_security_group_rule" "from-masters-mentics-demo-k8s-local-egress-all-0to0-__--0" {
+<   from_port         = 0
+<   ipv6_cidr_blocks  = ["::/0"]
+<   protocol          = "-1"
+<   security_group_id = aws_security_group.masters-mentics-demo-k8s-local.id
+<   to_port           = 0
+<   type              = "egress"
+< }
+< 
+< resource "aws_security_group_rule" "from-masters-mentics-demo-k8s-local-ingress-all-0to0-masters-mentics-demo-k8s-local" {
+<   from_port                = 0
+<   protocol                 = "-1"
+<   security_group_id        = aws_security_group.masters-mentics-demo-k8s-local.id
+<   source_security_group_id = aws_security_group.masters-mentics-demo-k8s-local.id
+<   to_port                  = 0
+<   type                     = "ingress"
+< }
+< 
+1082,1144d924
+< }
+< 
+< resource "aws_security_group_rule" "from-nodes-mentics-demo-k8s-local-ingress-tcp-1to2379-masters-mentics-demo-k8s-local" {
+<   from_port                = 1
+<   protocol                 = "tcp"
+<   security_group_id        = aws_security_group.masters-mentics-demo-k8s-local.id
+<   source_security_group_id = aws_security_group.nodes-mentics-demo-k8s-local.id
+<   to_port                  = 2379
+<   type                     = "ingress"
+< }
+< 
+< resource "aws_security_group_rule" "from-nodes-mentics-demo-k8s-local-ingress-tcp-2382to4000-masters-mentics-demo-k8s-local" {
+<   from_port                = 2382
+<   protocol                 = "tcp"
+<   security_group_id        = aws_security_group.masters-mentics-demo-k8s-local.id
+<   source_security_group_id = aws_security_group.nodes-mentics-demo-k8s-local.id
+<   to_port                  = 4000
+<   type                     = "ingress"
+< }
+< 
+< resource "aws_security_group_rule" "from-nodes-mentics-demo-k8s-local-ingress-tcp-4003to65535-masters-mentics-demo-k8s-local" {
+<   from_port                = 4003
+<   protocol                 = "tcp"
+<   security_group_id        = aws_security_group.masters-mentics-demo-k8s-local.id
+<   source_security_group_id = aws_security_group.nodes-mentics-demo-k8s-local.id
+<   to_port                  = 65535
+<   type                     = "ingress"
+< }
+< 
+< resource "aws_security_group_rule" "from-nodes-mentics-demo-k8s-local-ingress-udp-1to65535-masters-mentics-demo-k8s-local" {
+<   from_port                = 1
+<   protocol                 = "udp"
+<   security_group_id        = aws_security_group.masters-mentics-demo-k8s-local.id
+<   source_security_group_id = aws_security_group.nodes-mentics-demo-k8s-local.id
+<   to_port                  = 65535
+<   type                     = "ingress"
+< }
+< 
+< resource "aws_security_group_rule" "https-elb-to-master" {
+<   from_port                = 443
+<   protocol                 = "tcp"
+<   security_group_id        = aws_security_group.masters-mentics-demo-k8s-local.id
+<   source_security_group_id = aws_security_group.api-elb-mentics-demo-k8s-local.id
+<   to_port                  = 443
+<   type                     = "ingress"
+< }
+< 
+< resource "aws_security_group_rule" "icmp-pmtu-api-elb-0-0-0-0--0" {
+<   cidr_blocks       = ["0.0.0.0/0"]
+<   from_port         = 3
+<   protocol          = "icmp"
+<   security_group_id = aws_security_group.api-elb-mentics-demo-k8s-local.id
+<   to_port           = 4
+<   type              = "ingress"
+< }
+< 
+< resource "aws_security_group_rule" "icmpv6-pmtu-api-elb-__--0" {
+<   from_port         = -1
+<   ipv6_cidr_blocks  = ["::/0"]
+<   protocol          = "icmpv6"
+<   security_group_id = aws_security_group.api-elb-mentics-demo-k8s-local.id
+<   to_port           = -1
+<   type              = "ingress"

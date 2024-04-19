@@ -19,6 +19,6 @@ kubectl create clusterrolebinding cadmin \
 
 ./kubernetes/install-dashboard.sh
 
-./token.sh
+./kubernetes/token.sh
 
 # ./argo/install-argocd.sh

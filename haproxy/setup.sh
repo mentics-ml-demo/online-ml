@@ -1,29 +1,28 @@
 #!/bin/bash
-set -e
+
+# TODO: when implement auto match auto scaling group, may need to save state: https://stackoverflow.com/a/36750445/315734
+
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
-# This is run after terraform has created the instance
+haproxy_local="../out/haproxy.cfg"
+haproxy_remote="/home/ec2-user/haproxy.cfg"
 
-cd ../out/terraform
-json_output=$(terraform output -json node_autoscaling_group_ids)
-NODES_ASG_ID=${json_output//[\]\[\"]/}
+nginx_local="nginx.conf"
+nginx_remote="/home/ec2-user/nginx.conf"
+site_local="site"
+site_remote="/home/ec2-user/"
 
-json_output=$(terraform output -json master_autoscaling_group_ids)
-CONTROL_ASG_ID=${json_output//[\]\[\"]/}
+./make-conf.sh ${haproxy_local}
 
-echo "Getting instance list for auto scaling group ${NODES_ASG_ID}"
-nodes_refs=$(aws ec2 describe-instances --filters "Name=tag:aws:autoscaling:groupName,Values=${NODES_ASG_ID}" --query "Reservations[*].Instances[*].[PrivateDnsName]" --output text)
-echo "Found instances: ${nodes_refs}"
+./connect.sh scp ${haproxy_local} ${haproxy_remote}
+./connect.sh scp ${nginx_local} ${nginx_remote}
+./connect.sh scp ${site_local} ${site_remote}
 
-echo "Getting instance list for auto scaling group ${CONTROL_ASG_ID}"
-control_refs=$(aws ec2 describe-instances --filters "Name=tag:aws:autoscaling:groupName,Values=${CONTROL_ASG_ID}" --query "Reservations[*].Instances[*].[PrivateDnsName]" --output text)
-echo "Found instances: ${control_refs}"
-
-# TODO: when auto match asg, may need to save state: https://stackoverflow.com/a/36750445/315734
-
-LOCAL_PATH="../out/haproxy.conf"
-REMOTE_PATH="/home/ec2-user/haproxy.conf"
-
-./gen-haproxy.sh "${control_refs}" "${nodes_refs}" > ${LOCAL_PATH}
-./connect.sh scp LOCAL_PATH ${REMOTE_PATH}
-./haproxy/connect.sh "sudo dnf update && sudo dnf install haproxy -y && sudo cp ${REMOTE_PATH} /etc/haproxy/haproxy.conf"
+./connect.sh <<EOT
+sudo dnf update
+sudo dnf install haproxy nginx -y
+sudo cp ${haproxy_remote} /etc/haproxy/haproxy.cfg
+sudo cp ${nginx_remote} /etc/nginx/nginx.conf
+sudo mkdir -p /srv/www/default && sudo cp -r ${site_remote}/site/* /srv/www/default
+sudo systemctl restart haproxy
+EOT

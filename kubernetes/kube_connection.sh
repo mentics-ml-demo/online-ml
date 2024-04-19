@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+cd "$(dirname "${BASH_SOURCE[0]}")"
 
 # aws ec2-instance-connect ssh --connection-type eice --instance-id i-0f8841c7115d56f34
 
@@ -22,8 +23,6 @@ aws ec2-instance-connect send-ssh-public-key \
     --instance-os-user ec2-user \
     --ssh-public-key file://${HOME}/.ssh/id_ed25519.pub
 
-cd "$(dirname "${BASH_SOURCE[0]}")"
-
 TEMP_KUBE_FILE=/tmp/kubeconfig
 echo "cat ~/.kube/config" | aws ec2-instance-connect ssh --instance-id ${CONTROL_PLANE_ID} --os-user ec2-user | sed -n '/apiVersion/,$p' > ${TEMP_KUBE_FILE}
 
@@ -40,5 +39,5 @@ export KUBE_CLIENT_KEY=$(get_data 'client-key-data')
 
 envsubst < kubeconfig.template > ~/.kube/config
 
-# echo "Connecting and forwarding 7443 to control-plane:443"
-# aws ec2-instance-connect ssh --instance-id ${CONTROL_PLANE_ID} --local-forwarding 7443:localhost:443
+echo "Connecting and forwarding 7443 to control-plane:443"
+aws ec2-instance-connect ssh --instance-id ${CONTROL_PLANE_ID} --local-forwarding 7443:localhost:443
