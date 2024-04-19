@@ -1,3 +1,3 @@
 #!/bin/bash
 
-kops export kubeconfig --name ${CLUSTER_NAME}
+kops export kubeconfig --name "${CLUSTER_NAME}"

@@ -4,7 +4,7 @@ if [ -z "$1" ]; then
     exit 1
 fi
 OUTPUT_PATH="$(pwd)/$1"
-echo $OUTPUT_PATH
+echo "$OUTPUT_PATH"
 
 set -e
 cd "$(dirname "${BASH_SOURCE[0]}")"
@@ -27,5 +27,5 @@ echo "Getting instance list for auto scaling group ${CONTROL_ASG_ID}"
 control_refs=$(aws ec2 describe-instances --filters "Name=tag:aws:autoscaling:groupName,Values=${CONTROL_ASG_ID}" --query "Reservations[*].Instances[*].[PrivateDnsName]" --output text)
 echo "Found instances: ${control_refs}"
 
-cd ${WORK_DIR}
-./gen-conf.sh "${control_refs}" "${nodes_refs}" > "${OUTPUT_PATH}"
+cd "${WORK_DIR}"
+./gen-haproxy.sh "${control_refs}" "${nodes_refs}" > "${OUTPUT_PATH}"

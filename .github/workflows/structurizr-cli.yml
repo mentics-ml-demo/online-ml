@@ -1,0 +1,30 @@
+name: upload-sctructurizr
+
+on:
+  push:
+    branches:
+      - 'main'
+    paths:
+      - 'docs/structurizr.dsl'
+
+jobs:
+  structurizr-cli:
+    runs-on: ubuntu-latest
+    name: Run structurizr-cli
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Run structurizr-cli action
+        uses: aidmax/structurizr-cli-action@v1
+        id: test
+        with:
+          id: ${{ secrets.structurizr_workspace_id }}
+          key: ${{ secrets.structurizr_api_key }}
+          secret: ${{ secrets.structurizr_api_secret }}
+          workspace: docs/structurizr.dsl
+
+          # optional parameters
+          url: ${{ secrets.structurizr_api_url }}
+          merge: false
+          archive: false

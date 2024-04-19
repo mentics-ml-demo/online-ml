@@ -151,6 +151,15 @@ resource "aws_security_group_rule" "ingress-nodes-to-control" {
   type                     = "ingress"
 }
 
+resource "aws_security_group_rule" "ingress-ssh-to-control" {
+  cidr_blocks       = ["0.0.0.0/0"]
+  from_port                = 22
+  protocol                 = "tcp"
+  security_group_id        = aws_security_group.masters-mentics-demo-k8s-local.id
+  to_port                  = 22
+  type                     = "ingress"
+}
+
 resource "aws_security_group_rule" "ingress-lb-to-control" {
   from_port                = 0
   protocol                 = "-1"
@@ -160,11 +169,11 @@ resource "aws_security_group_rule" "ingress-lb-to-control" {
   type                     = "ingress"
 }
 
-resource "aws_security_group_rule" "ingress-ssh-to-control" {
-  cidr_blocks       = ["0.0.0.0/0"]
-  from_port                = 22
-  protocol                 = "tcp"
-  security_group_id        = aws_security_group.masters-mentics-demo-k8s-local.id
-  to_port                  = 22
+resource "aws_security_group_rule" "ingress-lb-to-nodes" {
+  from_port                = 0
+  protocol                 = "-1"
+  security_group_id        = aws_security_group.nodes-mentics-demo-k8s-local.id
+  source_security_group_id = aws_security_group.load_balancer.id
+  to_port                  = 0
   type                     = "ingress"
 }
