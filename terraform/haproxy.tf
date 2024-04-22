@@ -3,6 +3,11 @@ variable "ssh_access_block" {
     description = "CIDR block to allow ssh access to the load balancer"
 }
 
+variable "eip_allocation_id" {
+    type = string
+    description = "Existing eip allocation id to associate with the load balancer."
+}
+
 output "haproxy_instance_id" {
   value = "aws_instance.haproxy.id"
 }
@@ -151,6 +156,24 @@ resource "aws_security_group_rule" "ingress-nodes-to-control" {
   type                     = "ingress"
 }
 
+resource "aws_security_group_rule" "ingress-nodes-to-load_balancer-ssh" {
+  from_port                = 22
+  protocol                 = "tcp"
+  security_group_id        = aws_security_group.load_balancer.id
+  source_security_group_id = aws_security_group.nodes-mentics-demo-k8s-local.id
+  to_port                  = 22
+  type                     = "ingress"
+}
+
+resource "aws_security_group_rule" "ingress-nodes-to-load_balancer-ssh" {
+  from_port                = 22
+  protocol                 = "tcp"
+  security_group_id        = aws_security_group.load_balancer.id
+  source_security_group_id = aws_security_group.masters-mentics-demo-k8s-local.id
+  to_port                  = 22
+  type                     = "ingress"
+}
+
 resource "aws_security_group_rule" "ingress-ssh-to-control" {
   cidr_blocks       = ["0.0.0.0/0"]
   from_port                = 22
@@ -176,4 +199,9 @@ resource "aws_security_group_rule" "ingress-lb-to-nodes" {
   source_security_group_id = aws_security_group.load_balancer.id
   to_port                  = 0
   type                     = "ingress"
+}
+
+resource "aws_eip_association" "eip_assoc" {
+  allocation_id = var.eip_allocation_id
+  instance_id   = aws_instance.load_balancer.id
 }

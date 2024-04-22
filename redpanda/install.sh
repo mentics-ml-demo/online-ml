@@ -1,35 +1,32 @@
 #!/bin/bash
 
-# Abort early if any script fails
-set -e
-# Make paths based on location of this script
-cd "$(dirname "${BASH_SOURCE[0]}")"
+# REDPANDA_ID=$(aws ec2 describe-instances \
+#     --output text --query 'Reservations[*].Instances[*].{InstanceId,PrivateIpAddress}' \
+#     --filters 'Name=tag:Name,Values=redpanda' 'Name=instance-state-name,Values=running')
 
-kubectl create namespace rpanda
-kubectl config set-context --current --namespace=rpanda
+response=$(aws ec2 describe-instances \
+    --output text --query 'Reservations[].Instances[].{InstanceID:InstanceId,ip:PrivateIpAddress}' \
+    --filters 'Name=tag:Name,Values=redpanda*' 'Name=instance-state-name,Values=running')
+vars=($response)
+INSTANCE_ID=${vars[0]}
+PRIVATE_IP=${vars[1]}
+echo "Installing redpanda into $INSTANCE_ID with ip $PRIVATE_IP"
 
-# https://docs.redpanda.com/current/deploy/deployment-option/self-hosted/kubernetes/local-guide/
+aws ec2-instance-connect send-ssh-public-key \
+    --region us-west-2 \
+    --availability-zone us-west-2b \
+    --instance-id "${INSTANCE_ID}" \
+    --instance-os-user ec2-user \
+    --ssh-public-key file://"${HOME}"/.ssh/id_ed25519.pub
 
-helm repo add jetstack https://charts.jetstack.io
-helm repo add redpanda https://charts.redpanda.com
-helm repo update
-
-helm install cert-manager jetstack/cert-manager --set installCRDs=true --namespace cert-manager --create-namespace
-
-kubectl kustomize "https://github.com/redpanda-data/redpanda-operator//src/go/k8s/config/crd?ref=v2.1.16-23.3.11" \
-    | kubectl apply -f -
-
-helm upgrade --install redpanda-controller redpanda/operator \
-  --namespace rpanda \
-  --set image.tag=v2.1.16-23.3.11 \
-  --create-namespace
-
-# kubectl get redpanda --namespace rpanda --watch
-kubectl wait --for=condition=ready pod redpanda-0 --namespace rpanda
-
-kubectl apply -f redpanda-cluster.yaml --namespace rpanda
-
-kubectl --namespace rpanda port-forward svc/redpanda-console 8020:8080 > /dev/null 2>&1 &
-echo "Access the redpanda web console at http://localhost:8020/"
-
-# TODO: create topic
+cat <<EOT | aws ec2-instance-connect ssh --instance-id "${INSTANCE_ID}" --os-user ec2-user
+curl -1sLf 'https://dl.redpanda.com/nzc4ZYQK3WRGd9sy/redpanda/cfg/setup/bash.rpm.sh' > bash.rpm.sh
+cat bash.rpm.sh | sudo -E bash && sudo yum install redpanda -y
+cat bash.rpm.sh | sudo -E bash && sudo yum install redpanda-console -y
+sudo rpk redpanda config bootstrap --self ${PRIVATE_IP} --advertised-kafka ${PRIVATE_IP} --ips ${PRIVATE_IP}
+sudo rpk redpanda config set redpanda.empty_seed_starts_cluster false
+sudo systemctl start redpanda-tuner redpanda
+sudo systemctl start redpanda-console
+sudo systemctl status redpanda-console
+rpk cluster info
+EOT

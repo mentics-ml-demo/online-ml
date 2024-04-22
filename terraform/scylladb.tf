@@ -1,4 +1,4 @@
-resource "aws_instance" "scylladb_ec2" {
+resource "aws_instance" "scylladb" {
     ami = "ami-0cf9b940f04a883a1"
     instance_type = "t4g.small"
     availability_zone = "us-west-2b"

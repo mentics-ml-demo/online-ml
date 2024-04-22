@@ -21,7 +21,9 @@ kubectl create clusterrolebinding cadmin \
 ./kubernetes/install-dashboard.sh
 
 ./structurizr/install.sh
+./scylladb/setup.sh
+./redpanda/install.sh
 
-# ./argo/install-argocd.sh
+./argo/install-argocd.sh
 
 ./kubernetes/token.sh

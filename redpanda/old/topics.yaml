@@ -1,0 +1,26 @@
+apiVersion: cluster.redpanda.com/v1alpha1
+kind: Topic
+metadata:
+  name: raw
+spec:
+  kafkaApiSpec:
+    brokers:
+      - "redpanda-0.redpanda.rpanda.svc.cluster.local:9093"
+---
+apiVersion: cluster.redpanda.com/v1alpha1
+kind: Topic
+metadata:
+  name: features
+spec:
+  kafkaApiSpec:
+    brokers:
+      - "redpanda-0.redpanda.rpanda.svc.cluster.local:9093"
+---
+apiVersion: cluster.redpanda.com/v1alpha1
+kind: Topic
+metadata:
+  name: actual
+spec:
+  kafkaApiSpec:
+    brokers:
+      - "redpanda-0.redpanda.rpanda.svc.cluster.local:9093"

@@ -8,9 +8,9 @@ global
 
 defaults
     mode http
-    timeout connect 2000ms
-    timeout client 2000ms
-    timeout server 2000ms
+    timeout connect 5000ms
+    timeout client 5000ms
+    timeout server 5000ms
 
 frontend HTTP_Termination
     bind *:80
@@ -23,10 +23,12 @@ frontend SSL_Termination
     acl acl_k8s_api hdr_sub(host) -i api
     acl acl_k8s_dash hdr_sub(host) -i dash.k8s
     acl acl_structurizr hdr_sub(host) -i structurizr
+    acl acl_argocd hdr_sub(host) -i cd.k8s
 
     use_backend api if acl_k8s_api
     use_backend dash_nodeport if acl_k8s_dash
     use_backend structurizr if acl_structurizr
+    use_backend argocd if acl_argocd
     default_backend default
 
 backend default
@@ -62,5 +64,16 @@ EOF
 count=1
 for ref in $NODES; do
     echo "    server structurizr_${count} ${ref}:32001"
+    ((count++));
+done
+
+## ArgoCD
+cat <<EOF
+backend argocd
+EOF
+
+count=1
+for ref in $NODES; do
+    echo "    server argocd_${count} ${ref}:32013 ssl verify none"
     ((count++));
 done

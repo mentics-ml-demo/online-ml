@@ -32,5 +32,7 @@ sudo systemctl restart nginx
 
 sudo cp ${haproxy_remote} /etc/haproxy/haproxy.cfg
 sudo cp ${pem_remote} /etc/haproxy/site.pem
+sudo chown haproxy:haproxy /etc/haproxy/site.pem
+sudo chmod 444 /etc/haproxy/site.pem
 sudo systemctl restart haproxy
 EOT
