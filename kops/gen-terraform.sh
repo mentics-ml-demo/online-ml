@@ -25,7 +25,7 @@ kops create cluster \
     --discovery-store "${OIDC_STORE_URL}" \
     --state "${STATE_STORE_URL}" \
     --cloud aws \
-    --zones "${ZONES}" \
+    --zones "${ZONE}" \
     --image amazon/al2023-ami-2023.4.20240401.1-kernel-6.1-arm64 \
     --topology private \
     --associate-public-ip=false \

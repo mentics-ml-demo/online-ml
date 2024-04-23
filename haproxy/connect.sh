@@ -3,15 +3,11 @@
 
 cd "$(dirname "${BASH_SOURCE[0]}")" || exit
 
-if [ -f "../out/lb-ip.txt" ]; then
-    echo "Using dns name from out/lb-ip.txt"
-    PUBLIC_DNS=$(cat ../out/lb-ip.txt)
-else
-    res=$(aws ec2 describe-instances --filters 'Name=tag:Name,Values=["HAProxy"]' --query "Reservations[*].Instances[*].[PublicDnsName]" --output text)
-    PUBLIC_DNS=${res//[ $'\n']/}
-    echo "${PUBLIC_DNS}" > ../out/lb-ip.txt
-    echo "Connecting to ${PUBLIC_DNS}"
-fi
+HAPROXY_ID=$("$BASE_DIR"/aws/find_by_name.sh "HAProxy")
+# INSTANCE_ID=$(../aws/find_instance.sh "Tags[].Value" "HAProxy")
+PUBLIC_DNS=$(../aws/get_field.sh "${HAPROXY_ID}" PublicDnsName)
+
+echo "Connecting to ${PUBLIC_DNS}"
 
 if [ -n "$1" ]; then
     if [ "$1" == 'scp' ]; then

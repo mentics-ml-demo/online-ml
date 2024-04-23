@@ -1,8 +1,13 @@
 #!/bin/bash
+BASE_DIR=$(realpath "$(dirname "${BASH_SOURCE[0]}")"/..)
 
-SCYLLADB_ID=$(aws ec2 describe-instances \
-    --output text --query 'Reservations[*].Instances[*].InstanceId' \
-    --filters 'Name=tag:Name,Values=ScyllaDB' 'Name=instance-state-name,Values=running')
+SCYLLADB_ID=$("$BASE_DIR"/aws/find_by_name.sh "ScyllaDB")
+
+"$BASE_DIR"/aws/add_known_host.sh "${SCYLLADB_ID}"
+
+# SCYLLADB_ID=$(aws ec2 describe-instances \
+#     --output text --query 'Reservations[*].Instances[*].InstanceId' \
+#     --filters 'Name=tag:Name,Values=ScyllaDB' 'Name=instance-state-name,Values=running')
 
 # aws ec2-instance-connect send-ssh-public-key \
 #     --region us-west-2 \

@@ -19,6 +19,8 @@ NODES_ASG_ID=${json_output//[\]\[\"]/}
 json_output=$(terraform output -json master_autoscaling_group_ids)
 CONTROL_ASG_ID=${json_output//[\]\[\"]/}
 
+# TODO: replace aws cli with ../aws/get_field to speed it up
+
 echo "Getting instance list for auto scaling group ${NODES_ASG_ID}"
 nodes_refs=$(aws ec2 describe-instances --filters "Name=tag:aws:autoscaling:groupName,Values=${NODES_ASG_ID}" --query "Reservations[*].Instances[*].[PrivateDnsName]" --output text)
 echo "Found instances: ${nodes_refs}"

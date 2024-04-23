@@ -3,12 +3,12 @@ sudo dnf install certbot
 sudo systemctl start certbot-renew.timer
 
 # TODO: can maybe automate with a hook script later
-sudo certbot certonly --manual --authenticator manual --preferred-challenges dns --debug-challenges -d \*.mentics.com -d mentics.com -v
-sudo cat /etc/letsencrypt/live/mentics.com/fullchain.pem /etc/letsencrypt/live/mentics.com/privkey.pem | sudo dd of=/etc/haproxy/site.pem
+sudo certbot certonly --manual --authenticator manual --preferred-challenges dns --debug-challenges -d \*.${DOMAIN} -d ${DOMAIN} -v
+sudo cat /etc/letsencrypt/live/${DOMAIN}/fullchain.pem /etc/letsencrypt/live/${DOMAIN}/privkey.pem | sudo dd of=/etc/haproxy/site.pem
 
 ./haproxy/connect.sh <<EOT
 mkdir -p /home/ec2-user/certs
-sudo sh -c "cp /etc/letsencrypt/live/mentics.com/*.pem /home/ec2-user/certs/"
+sudo sh -c "cp /etc/letsencrypt/live/${DOMAIN}/*.pem /home/ec2-user/certs/"
 sudo chown ec2-user:ec2-user /home/ec2-user/certs/*
 chmod 400 /home/ec2-user/certs/*
 EOT
@@ -23,4 +23,4 @@ tar cfz certs.tgz *
 # cd /etc/letsencrypt
 # sudo wget https://github.com/joohoi/acme-dns-certbot-joohoi/raw/master/acme-dns-auth.py
 # sudo chmod 700
-# sudo certbot certonly --manual --manual-auth-hook /etc/letsencrypt/acme-dns-auth.py --preferred-challenges dns --debug-challenges -d \*.mentics.com -d mentics.com -v
+# sudo certbot certonly --manual --manual-auth-hook /etc/letsencrypt/acme-dns-auth.py --preferred-challenges dns --debug-challenges -d \*.${DOMAIN} -d ${DOMAIN} -v

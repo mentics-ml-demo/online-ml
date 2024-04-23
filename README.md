@@ -4,6 +4,11 @@ Demonstration system that runs an ML model (including inference, ongoing trainin
 
 # Run
 
+copy `config.template` to `config` and enter the values for the unset properties there.
+
+For running commands or troubleshooting, you must set the properties in your current shell by running:
+`source setenv.sh`
+
 Run from the shell:
 `./run.sh`
 This will startup a cluster in AWS
@@ -12,8 +17,17 @@ When you're done with it, run
 `./shudown.sh`
 to shut down the cluster.
 
-For running commands or troubleshooting, you must set the vars in your current shell by running:
-`. setenv.sh`
+# Access components
+
+haproxy configures host based access to:
+k8s dashboard: https://${SUBDOMAIN_KUBERNETES}.${DOMAIN}
+ArgoCD admin: https://${SUBDOMAIN_CD}.${DOMAIN}
+Structurizr: https://${SUBDOMAIN_STRUCTURIZR}.${DOMAIN}
+
+Forwarding brings acccess to:
+`./kubernetes/forward_api.sh`: kubectl at localhost:7443
+`./redpanda/connect.sh`: Makes the redpanda console available via http://localhost:8020
+`./scylladb/connect.sh`: There's no UI, but you access a shell on the host via this command
 
 # Notes:
 
@@ -21,6 +35,10 @@ I specified t4g.small for size because they are free during 2024. Also, oddly en
 
 
 # Prereqs
+
+## Install command line tools
+
+sudo apt-get install -y jq
 
 ## Install AWS CLI
 

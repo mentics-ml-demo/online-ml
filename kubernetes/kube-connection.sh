@@ -1,10 +1,11 @@
 #!/bin/bash
 set -e
+BASE_DIR=$(realpath "$(dirname "${BASH_SOURCE[0]}")"/..)
 cd "$(dirname "${BASH_SOURCE[0]}")"
 
-CONTROL_PLANE_ID=$(aws ec2 describe-instances \
-    --output text --query 'Reservations[*].Instances[*].InstanceId' \
-    --filters 'Name=tag:Name,Values=control-plane-*' 'Name=instance-state-name,Values=running')
+CONTROL_PLANE_ID=$(./get_control_plane_id.sh)
+# CONTROL_PLANE_ID=$("$BASE_DIR"/aws/find_instance.sh "Tags[].Value" "control-plane-us-west-2b.masters.${CLUSTER_NAME}")
+"$BASE_DIR"/aws/add_known_host.sh "${CONTROL_PLANE_ID}"
 
 aws ec2-instance-connect send-ssh-public-key \
     --region us-west-2 \
@@ -28,5 +29,5 @@ export KUBE_CERT_AUTH KUBE_CLIENT_CERT KUBE_CLIENT_KEY
 
 envsubst < kubeconfig.template > ~/.kube/config
 
-echo "Forwarding 7443 to control-plane:443"
-nohup aws ec2-instance-connect ssh --instance-id "${CONTROL_PLANE_ID}" --local-forwarding 7443:localhost:443 > /dev/null 2>&1 &
+# echo "Forwarding 7443 to control-plane:443"
+# nohup aws ec2-instance-connect ssh --instance-id "${CONTROL_PLANE_ID}" --local-forwarding 7443:localhost:443 > /dev/null 2>&1 &

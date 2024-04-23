@@ -3,10 +3,13 @@
 # abort early if any command fails
 set -e
 
-# source setenv.sh
+source setenv.sh
 ./kops/state-store.sh
 ./kops/gen-terraform.sh
 ./terraform/run-cluster.sh
+
+aws ec2 describe-instances > out/instances.json
+
 ./haproxy/setup.sh
 
 # ./kops/kubectl-context.sh
@@ -21,7 +24,7 @@ kubectl create clusterrolebinding cadmin \
 ./kubernetes/install-dashboard.sh
 
 ./structurizr/install.sh
-./scylladb/setup.sh
+./scylladb/configure.sh
 ./redpanda/install.sh
 
 ./argo/install-argocd.sh

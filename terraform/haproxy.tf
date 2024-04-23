@@ -165,7 +165,7 @@ resource "aws_security_group_rule" "ingress-nodes-to-load_balancer-ssh" {
   type                     = "ingress"
 }
 
-resource "aws_security_group_rule" "ingress-nodes-to-load_balancer-ssh" {
+resource "aws_security_group_rule" "ingress-control-to-load_balancer-ssh" {
   from_port                = 22
   protocol                 = "tcp"
   security_group_id        = aws_security_group.load_balancer.id
