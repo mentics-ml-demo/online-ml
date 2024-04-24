@@ -29,4 +29,6 @@ kubectl create clusterrolebinding cadmin \
 
 ./argo/install-argocd.sh
 
+./kubernetes/config-secrets.sh
+
 ./kubernetes/token.sh

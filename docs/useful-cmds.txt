@@ -58,7 +58,7 @@ chmod 777 /var/run/docker.sock
 docker run -it -v /var/run/docker.sock:/var/run/docker.sock ubuntu:latest sh -c "apt-get update ; apt-get install docker.io -y ; bash"
 
 docker run --user root -it -v /var/run/docker.sock:/var/run/docker.sock rust-runner /bin/bash
-docker run -it -v /var/run/docker.sock:/var/run/^Ccker.sock rust-runner /bin/bash
+docker run -it -v /var/run/docker.sock:/var/run/docker.sock rust-runner /bin/bash
 
 # To reclaim disk space from docker images and containers:
 docker system df
@@ -68,8 +68,8 @@ docker builder prune
 docker system prune
 
 # Delete all containers and images
-# sudo docker rmi -f $(sudo docker images -aq)
-# sudo docker rm -vf $(sudo docker ps -aq)
+sudo docker rm -vf $(sudo docker ps -aq)
+sudo docker rmi -f $(sudo docker images -aq)
 
 
 # Test EC2 instance

@@ -1,6 +1,6 @@
 #!/bin/bash
 
-BASE_DIR=$(dirname "${BASH_SOURCE[0]}")/..
+BASE_DIR=$(realpath "$(dirname "${BASH_SOURCE[0]}")/..")
 
 # REDPANDA_ID=$(aws ec2 describe-instances \
 #     --output text --query 'Reservations[*].Instances[*].{InstanceId,PrivateIpAddress}' \
@@ -42,3 +42,5 @@ sudo systemctl start redpanda-console
 sudo systemctl status redpanda-console
 rpk cluster info
 EOT
+
+echo "${PRIVATE_IP}:9092" > "${ENV_DIR}/REDPANDA_ENDPOINT"
