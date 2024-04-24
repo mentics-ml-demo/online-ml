@@ -4,6 +4,9 @@
 
 cd "$(dirname "${BASH_SOURCE[0]}")" || exit
 
+HAPROXY_ID=$("$BASE_DIR"/aws/find_by_name.sh "HAProxy")
+"$BASE_DIR"/aws/add_known_host.sh "${HAPROXY_ID}"
+
 haproxy_local="../out/haproxy.cfg"
 haproxy_remote="/home/ec2-user/haproxy.cfg"
 
@@ -17,12 +20,12 @@ pem_remote="/home/ec2-user/site.pem"
 
 ./make-haproxy.sh ${haproxy_local}
 
-./connect.sh scp ${haproxy_local} ${haproxy_remote}
-./connect.sh scp ${nginx_local} ${nginx_remote}
-./connect.sh scp ${site_local} ${site_remote}
-./connect.sh scp ${pem_local} ${pem_remote}
+"$BASE_DIR"/aws/public_connect.sh "$HAPROXY_ID" scp ${haproxy_local} ${haproxy_remote}
+"$BASE_DIR"/aws/public_connect.sh "$HAPROXY_ID" scp ${nginx_local} ${nginx_remote}
+"$BASE_DIR"/aws/public_connect.sh "$HAPROXY_ID" scp ${site_local} ${site_remote}
+"$BASE_DIR"/aws/public_connect.sh "$HAPROXY_ID" scp ${pem_local} ${pem_remote}
 
-./connect.sh <<EOT
+"$BASE_DIR"/aws/public_connect.sh "$HAPROXY_ID" ssh <<EOT
 sudo dnf update
 sudo dnf install haproxy nginx -y
 

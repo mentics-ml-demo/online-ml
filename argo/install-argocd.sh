@@ -7,7 +7,7 @@ set -e
 kubectl -n argocd apply -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 
 kubectl -n argocd wait pod argocd-application-controller-0 --for=condition=ready
-
+sleep 0.2
 # kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
 LOCAL_PORT=8010
 kubectl port-forward svc/argocd-server -n argocd ${LOCAL_PORT}:443 &

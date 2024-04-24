@@ -7,23 +7,8 @@ BASE_DIR=$(realpath "$(dirname "${BASH_SOURCE[0]}")"/..)
 # TMP_FILE='/tmp/tmp_values.props'
 # (envsubst < "${BASE_DIR}/ignore/config/env") > ${TMP_FILE}
 
-isrel() {
-    path=$1
-    [ "$path" = "${path#/}" ] && return
-    false
-}
-
-if isrel "${ENV_DIR}"; then
-    CONFIG="${BASE_DIR}/${ENV_DIR}"
-else
-    CONFIG="${ENV_DIR}"
-fi
-
-if isrel "${SECRETS_FILE}"; then
-    SECRETS="${BASE_DIR}/${SECRETS_FILE}"
-else
-    SECRETS="${SECRETS_FILE}"
-fi
-
-kubectl create configmap ml-demo-config --from-file "${CONFIG}"
-kubectl create secret ml-demo-secrets --from-env-file "${SECRETS}"
+kubectl create namespace ml-demo
+# kubectl delete -n ml-demo configmap ml-demo-config
+kubectl create -n ml-demo configmap ml-demo-config --from-file "${ABS_ENV_DIR}"
+# kubectl delete -n ml-demo secret ml-demo-secrets
+kubectl create -n ml-demo secret generic ml-demo-secrets --from-env-file "${ABS_SECRETS_FILE}"

@@ -6,8 +6,6 @@ if [ -n "$3" ]; then
     TO_PORT=$4
 fi
 
-BASE_DIR=$(realpath "$(dirname "${BASH_SOURCE[0]}")"/..)
-
 INSTANCE_ID=$("$BASE_DIR"/aws/find_by_name.sh "${NAME}")
 
 aws ec2-instance-connect send-ssh-public-key \

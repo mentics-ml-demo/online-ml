@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # abort early if any command fails
-set -e
+set -e -x
 
 source setenv.sh
 ./kops/state-store.sh

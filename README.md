@@ -4,6 +4,11 @@ Demonstration system that runs an ML model (including inference, ongoing trainin
 
 # Run
 
+To use IAM Identity Center as recommended (https://docs.aws.amazon.com/cli/latest/userguide/sso-configure-profile-token.html):
+aws configure sso
+export AWS_DEFAULT_PROFILE=<profile-name> # set this if you don't want to specify profile on all the commands
+aws sso login
+
 copy `config.template` to `config` and enter the values for the unset properties there.
 
 For running commands or troubleshooting, you must set the properties in your current shell by running:

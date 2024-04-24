@@ -43,4 +43,4 @@ sudo systemctl status redpanda-console
 rpk cluster info
 EOT
 
-echo "${PRIVATE_IP}:9092" > "${ENV_DIR}/REDPANDA_ENDPOINT"
+"$BASE_DIR"/kubernetes/add-config.sh REDPANDA_ENDPOINT "${PRIVATE_IP}:9092"

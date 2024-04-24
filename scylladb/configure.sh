@@ -22,4 +22,4 @@ cd "$(dirname "${BASH_SOURCE[0]}")" || exit 1
 echo -e "cqlsh\n$(cat ddl.cql)" | aws ec2-instance-connect ssh --instance-id "${SCYLLADB_ID}" --os-user scyllaadm
 
 IP=$("${BASE_DIR}/aws/get_field.sh" "${SCYLLADB_ID}" PrivateIpAddress)
-echo "${IP}:9042" > out/config.d/SCYLLADB_ENDPOINT
+"$BASE_DIR"/kubernetes/add-config.sh SCYLLADB_ENDPOINT "${IP}:9042"
