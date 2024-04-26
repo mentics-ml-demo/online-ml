@@ -1,9 +1,10 @@
 # This file needs to be sourced so the variables are available in the calling shell.
 
 set -a
-source config
 
 BASE_DIR=$(realpath "$(dirname "${BASH_SOURCE[0]}")")
+
+source "$BASE_DIR/config"
 
 # isrel() {
 #     path=$1

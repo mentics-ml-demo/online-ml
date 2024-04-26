@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 ./terraform/shutdown-cluster.sh
 ./kops/cleanup.sh
@@ -8,7 +9,7 @@
 echo "Removing known hosts from ssh"
 IPS=$(aws ec2 describe-instances --query 'Reservations[*]. Instances[*]. PublicIpAddress' --output text)
 for IP in $IPS; do
-  ssh-keygen -R $IP
+  ssh-keygen -R "$IP"
 done
 
 rm out/instances.json
