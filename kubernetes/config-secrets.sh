@@ -7,8 +7,8 @@ BASE_DIR=$(realpath "$(dirname "${BASH_SOURCE[0]}")"/..)
 # TMP_FILE='/tmp/tmp_values.props'
 # (envsubst < "${BASE_DIR}/ignore/config/env") > ${TMP_FILE}
 
-kubectl create namespace ml-demo
-# kubectl delete -n ml-demo configmap ml-demo-config
-kubectl create -n ml-demo configmap ml-demo-config --from-file "${ABS_ENV_DIR}"
-# kubectl delete -n ml-demo secret ml-demo-secrets
-kubectl create -n ml-demo secret generic ml-demo-secrets --from-env-file "${ABS_SECRETS_FILE}"
+kubectl create namespace online-ml
+# kubectl delete -n online-ml configmap online-ml-config
+kubectl create -n online-ml configmap online-ml-config --from-file "${ABS_ENV_DIR}"
+# kubectl delete -n online-ml secret online-ml-secrets
+kubectl create -n online-ml secret generic online-ml-secrets --from-env-file "${ABS_SECRETS_FILE}"
